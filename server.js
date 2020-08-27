@@ -1,7 +1,7 @@
 const path=require('path');
 const db=require('./db');
 const {Computers,Shoes,Movies,Games,Homes,NonDeps}=db.models;
-const faker =require('faker');
+//const faker =require('faker');
 const morgan =require('morgan');
 
 
@@ -67,9 +67,47 @@ app.use('/api/nondeps',async(req,res,next)=>{
     }
 })
 
+
+
 app.use((err, req, res, next)=> {
     res.status(500).send({ error: err.message });
   });
+
+  
+
+  app.post('/api/nondeps', async (req, res, next)=> {
+    try {
+      res.send(await NonDeps.create({ name: req.body.name}));
+      
+    }
+    catch(ex){
+      next(ex);
+    }
+  });
+  app.delete('/api/computers/:id', async (req, res, next)=> {
+    try {
+      const computer = await Computers.findByPk(req.params.id);
+      await computer.destroy();
+      res.sendStatus(204);
+    }
+    catch(ex){
+      next(ex);
+    }
+  });
+  
+
+//   app.put('/api/computers/:id', async (req, res, next)=> {
+//     try {
+//       const computer = await Computers.findByPk(req.params.id);
+//       await computer.update(req.body);
+//       res.send(computer);
+//     }
+//     catch(ex){
+//       next(ex);
+//     }
+//   });
+
+  
   
   const init = async()=> {
     try {
